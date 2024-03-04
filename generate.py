@@ -1,5 +1,6 @@
 from Dataloader import Hour
 import pandas as pd
+from utils import chatGLM, llm_res_json
 import numpy as np
 from CreateCFsWithGLT import Creator
 from Encoders.TabularEncoder import TabEncoder
@@ -85,7 +86,7 @@ elif args.vali_model == "KNN":
 print("========== model created. ==========")
 
 ## 确定类别属性
-c = ""
+consum = "" # 反事实目标列
 root_path = ""
 
 ## 导入数据
@@ -94,11 +95,11 @@ global _data,data
 if args.data == "hour":
     _data = Hour()
     data = _data.load_data()
-    c = "high_consum"
+    consum = "high_consum" # 反事实目标列
     root_path = "Hour/"
 
 root_path += "effi/"
-root_path="/Users/person/T-COL/"+root_path
+root_path="./"+root_path
 
 
 X = _data.data
@@ -122,56 +123,63 @@ print("========== verification model created. ==========")
 
 ## 划分样本
 row_index=args.row_index  # 样本下标
-n_samples = 1  # 样本数
 
-s = data.iloc[row_index-1:row_index]
+sample_row_data = data.iloc[row_index-1:row_index]
 
 # 判断样本的目标值是 1 还是 0
-print("ss",s)
-s_label=int(s[c])
-
-
+s_label=int(sample_row_data[consum])
 d_label= 0 if s_label==1 else 1
 
-samples = data[data[c] == s_label]
-protos = data[data[c] == d_label]
+# 划分样本
+samples = data[data[consum] == s_label]
+protos = data[data[consum] == d_label]
 
-print("-划分样本-",len(samples),len(protos))
+# 生成反事实个数
 n_ces = args.n_ces
 
+# 表头
+header_row = sample_row_data.columns.tolist() # 样本表头
+input_data = sample_row_data.iloc[0].values # 样本输入数据
 
-# 抽取五条
-s.to_csv(root_path + "samples.csv",index=False)
-creator = Creator(model, data, s, _data.categorical_features, args.depth, d_label, n_ces)
-
+# 保存测试样本
+sample_row_data.to_csv(root_path + "samples.csv",index=False)
+creator = Creator(model, data, sample_row_data, _data.categorical_features, args.depth, d_label, n_ces)
 fixed_col_arr=["gen","Dishwasher"] # 固定列
+
 
 # a
 args.func = "fcs"
 args.proto = "good"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)            # 默认german,cos,fcs a
 CEs.to_csv(root_path + "hour_good_fcs.csv",index=False)
+llm_res_json(CEs,header_row,consum,input_data,"hour_good_fcs")
+
 
 # b
 args.func = "ncs"
 args.proto = "near"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_near_ncs.csv",index=False)
+llm_res_json(CEs,header_row,consum,input_data,"hour_near_ncs")
+
 
 #  c
 args.func = "rss"
 args.proto = "rep"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_rep_rss.csv",index=False)
+llm_res_json(CEs,header_row,consum,input_data,"hour_rep_rss")
 
-# d
+# # d
 args.func = "rss"
 args.proto = "cos"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_cos_rss.csv",index=False)
+llm_res_json(CEs,header_row,consum,input_data,"hour_cos_rss")
 
-# e
+# # e
 args.func = "rss"
 args.proto = "cen"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_cen_rss.csv",index=False)
+llm_res_json(CEs,header_row,consum,input_data,"hour_cen_rss")

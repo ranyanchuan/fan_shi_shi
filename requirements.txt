@@ -7,3 +7,4 @@ prettytable==3.8.0
 scikit_learn==1.2.0
 torch==2.0.1
 tqdm==4.65.0
+zhipuai
