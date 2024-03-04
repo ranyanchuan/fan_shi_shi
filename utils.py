@@ -3,7 +3,7 @@ from zhipuai import ZhipuAI
 import json
 
 def chatGLM(prompt):
-    api_key="65722092a0e00f988699b12113c2dad2.EvGXIeggrmAgiplT"
+    api_key=""
     client = ZhipuAI(api_key=api_key) # 填写您自己的APIKey
     response = client.chat.completions.create(
         model="glm-4",  # 填写需要调用的模型名称

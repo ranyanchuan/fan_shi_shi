@@ -152,7 +152,7 @@ args.func = "fcs"
 args.proto = "good"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)            # 默认german,cos,fcs a
 CEs.to_csv(root_path + "hour_good_fcs.csv",index=False)
-llm_res_json(CEs,header_row,consum,input_data,"hour_good_fcs")
+llm_res_json(CEs,header_row,consum,input_data,"hour_good_fcs") # 大模型总结
 
 
 # b
@@ -160,7 +160,7 @@ args.func = "ncs"
 args.proto = "near"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_near_ncs.csv",index=False)
-llm_res_json(CEs,header_row,consum,input_data,"hour_near_ncs")
+llm_res_json(CEs,header_row,consum,input_data,"hour_near_ncs") # 大模型总结
 
 
 #  c
@@ -168,18 +168,18 @@ args.func = "rss"
 args.proto = "rep"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_rep_rss.csv",index=False)
-llm_res_json(CEs,header_row,consum,input_data,"hour_rep_rss")
+llm_res_json(CEs,header_row,consum,input_data,"hour_rep_rss") # 大模型总结
 
 # # d
 args.func = "rss"
 args.proto = "cos"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_cos_rss.csv",index=False)
-llm_res_json(CEs,header_row,consum,input_data,"hour_cos_rss")
+llm_res_json(CEs,header_row,consum,input_data,"hour_cos_rss") # 大模型总结
 
 # # e
 args.func = "rss"
 args.proto = "cen"
 CEs = pd.DataFrame(creator.createCFs(args.proto, dataset=args.data, device=args.gpu, func = args.func,fixed_col_arr=fixed_col_arr), columns=data.columns.values)
 CEs.to_csv(root_path + "hour_cen_rss.csv",index=False)
-llm_res_json(CEs,header_row,consum,input_data,"hour_cen_rss")
+llm_res_json(CEs,header_row,consum,input_data,"hour_cen_rss") # 大模型总结
